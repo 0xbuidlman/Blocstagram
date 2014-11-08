@@ -85,4 +85,16 @@
 }
 
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.images[indexPath.row]) return YES;
+    return NO;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.images removeObject:self.images[indexPath.row]];
+        [self.tableView reloadData];
+    }
+}
+
 @end
