@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6CB8625E1A0E6C60006488B8 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB8625D1A0E6C60006488B8 /* User.m */; };
+		6CB862611A0E6DF3006488B8 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB862601A0E6DF3006488B8 /* Media.m */; };
+		6CB862641A0E7002006488B8 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB862631A0E7002006488B8 /* Comment.m */; };
+		6CB862671A0E711D006488B8 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB862661A0E711D006488B8 /* DataSource.m */; };
 		6CCD10461A0D5C7600CB84DD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD10451A0D5C7600CB84DD /* main.m */; };
 		6CCD10491A0D5C7600CB84DD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD10481A0D5C7600CB84DD /* AppDelegate.m */; };
 		6CCD104C1A0D5C7600CB84DD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD104B1A0D5C7600CB84DD /* ViewController.m */; };
@@ -37,6 +41,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6CB8625C1A0E6C60006488B8 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		6CB8625D1A0E6C60006488B8 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		6CB8625F1A0E6DF3006488B8 /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Media.h; sourceTree = "<group>"; };
+		6CB862601A0E6DF3006488B8 /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
+		6CB862621A0E7002006488B8 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
+		6CB862631A0E7002006488B8 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
+		6CB862651A0E711D006488B8 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		6CB862661A0E711D006488B8 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		6CCD10401A0D5C7600CB84DD /* Blocstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blocstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CCD10441A0D5C7600CB84DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6CCD10451A0D5C7600CB84DD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -109,6 +121,14 @@
 				6CCD104B1A0D5C7600CB84DD /* ViewController.m */,
 				6CCD107E1A0D5E0B00CB84DD /* ImagesTableViewController.h */,
 				6CCD107F1A0D5E0B00CB84DD /* ImagesTableViewController.m */,
+				6CB8625C1A0E6C60006488B8 /* User.h */,
+				6CB8625D1A0E6C60006488B8 /* User.m */,
+				6CB8625F1A0E6DF3006488B8 /* Media.h */,
+				6CB862601A0E6DF3006488B8 /* Media.m */,
+				6CB862621A0E7002006488B8 /* Comment.h */,
+				6CB862631A0E7002006488B8 /* Comment.m */,
+				6CB862651A0E711D006488B8 /* DataSource.h */,
+				6CB862661A0E711D006488B8 /* DataSource.m */,
 				6CCD10501A0D5C7600CB84DD /* Images.xcassets */,
 				6CCD10521A0D5C7600CB84DD /* LaunchScreen.xib */,
 				6CCD10431A0D5C7600CB84DD /* Supporting Files */,
@@ -268,6 +288,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CB862641A0E7002006488B8 /* Comment.m in Sources */,
+				6CB862611A0E6DF3006488B8 /* Media.m in Sources */,
+				6CB862671A0E711D006488B8 /* DataSource.m in Sources */,
+				6CB8625E1A0E6C60006488B8 /* User.m in Sources */,
 				6CCD104C1A0D5C7600CB84DD /* ViewController.m in Sources */,
 				6CCD10491A0D5C7600CB84DD /* AppDelegate.m in Sources */,
 				6CCD10461A0D5C7600CB84DD /* main.m in Sources */,
@@ -456,6 +480,7 @@
 				6CCD10651A0D5C7600CB84DD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6CCD10661A0D5C7600CB84DD /* Build configuration list for PBXNativeTarget "BlocstagramTests" */ = {
 			isa = XCConfigurationList;
@@ -464,6 +489,7 @@
 				6CCD10681A0D5C7600CB84DD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
