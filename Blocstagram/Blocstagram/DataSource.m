@@ -49,6 +49,14 @@
             media.user = [self randomUser];
             media.image = image;
             
+            int captionLength = arc4random_uniform(10);
+            NSMutableString *caption = [NSMutableString string];
+            for (int i = 0; i <= captionLength; i++) {
+                NSString *randomWord = [self randomStringOfLength:arc4random_uniform(12)];
+                [caption appendFormat:@" %@", randomWord];
+            }
+            media.caption = caption;
+            
             NSUInteger commentCount = arc4random_uniform(10);
             NSMutableArray *randomComments = [NSMutableArray array];
             
