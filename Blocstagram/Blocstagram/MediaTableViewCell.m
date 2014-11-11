@@ -59,8 +59,12 @@ static NSParagraphStyle *paragraphStyle;
         self.commentLabel = [[UILabel alloc] init];
         self.commentLabel.numberOfLines = 0;
         
-        for (UIView *view in @[self.mediaImageView, self.userNameAndCaptionLabel, self.commentLabel]) {
+        for (UIView *view in @[self.mediaImageView]) {
             [self.contentView addSubview:view];
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+        }
+        for (UIView *view in @[self.userNameAndCaptionLabel, self.commentLabel]) {
+            [self.mediaImageView addSubview:view];
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
         
@@ -82,10 +86,15 @@ static NSParagraphStyle *paragraphStyle;
                                                                                    views:viewDictionary]];
         
         [self.contentView addConstraints:[NSLayoutConstraint
-                        constraintsWithVisualFormat:@"V:|[_mediaImageView][_userNameAndCaptionLabel][_commentLabel]"
+                        constraintsWithVisualFormat:@"V:|[_mediaImageView]"
                                                                                  options:kNilOptions
                                                                                  metrics:nil
                                                                                    views:viewDictionary]];
+        
+        [self.mediaImageView addConstraints:[NSLayoutConstraint
+                                            constraintsWithVisualFormat:@"V:|[_userNameAndCaptionLabel][_commentLabel]"
+                                            options:kNilOptions metrics:nil views:viewDictionary]];
+        
         
         self.imageHeightConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView
                                                                   attribute:NSLayoutAttributeHeight
@@ -112,8 +121,8 @@ static NSParagraphStyle *paragraphStyle;
                                                                         multiplier:1
                                                                           constant:100];
         
-        [self.contentView addConstraints:@[self.imageHeightConstraint, self.userNameAndCaptionLabelHeightConstraint,
-                                           self.commentLabelHeightConstraint]];
+        [self.contentView addConstraints:@[self.imageHeightConstraint]];
+        [self.mediaImageView addConstraints:@[self.userNameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint]];
     }
     return self;
 }
@@ -131,6 +140,12 @@ static NSParagraphStyle *paragraphStyle;
     self.userNameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
     self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
     
+    if (_mediaItem.image) {
+        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+    } else {
+        self.imageHeightConstraint.constant = 0;
+    }
+    
     // Hide the line between cells
     self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
 }
@@ -145,8 +160,8 @@ static NSParagraphStyle *paragraphStyle;
     self.userNameAndCaptionLabel.attributedText = [self userNameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     
-    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width
-                                                                * CGRectGetWidth(self.contentView.bounds);
+//    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width
+//                                                                * CGRectGetWidth(self.contentView.bounds);
 }
 
 
@@ -202,7 +217,7 @@ static NSParagraphStyle *paragraphStyle;
     [layoutCell setNeedsLayout];
     [layoutCell layoutIfNeeded];
     
-    return CGRectGetMaxY(layoutCell.commentLabel.frame);
+    return MAX(CGRectGetMaxY(layoutCell.commentLabel.frame), CGRectGetMaxY(layoutCell.mediaImageView.frame));
 }
 
 @end
