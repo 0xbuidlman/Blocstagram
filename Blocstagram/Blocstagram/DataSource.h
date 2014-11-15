@@ -14,6 +14,7 @@
 @property (nonatomic, readonly) NSArray *mediaItems;
 
 + (instancetype)sharedInstance;
-- (void)removeItem:(Media *)item;
+- (void)removeItem:(Media *)item; // legacy method
+- (void)deleteMediaItem:(Media *)item;
 
 @end

@@ -13,10 +13,15 @@
 #import "Comment.h"
 
 @interface DataSource()
-@property (nonatomic)  NSArray *mediaItems;
+// @property (nonatomic)  NSArray *mediaItems;
+{
+                          NSMutableArray *_mediaItems;
+}
 @end
 
 @implementation DataSource
+
+#pragma mark - Singleton Shared Instance Class Method & Initialization
 
 + (instancetype)sharedInstance {
     static dispatch_once_t once;
@@ -36,6 +41,9 @@
     }
     return self;
 }
+
+
+#pragma mark - Random Data Generators
 
 - (void)addRandomData {
     NSMutableArray *randomMediaItems = [NSMutableArray array];
@@ -70,14 +78,13 @@
         }
     }
     
-    self.mediaItems = randomMediaItems;
+    _mediaItems = randomMediaItems;
 }
 
 
 - (void)removeItem:(Media *)item {
     NSMutableArray *newItems = [NSMutableArray arrayWithArray:self.mediaItems];
     [newItems removeObject:item];
-    self.mediaItems = newItems;
 }
 
 - (User *)randomUser {
@@ -124,5 +131,46 @@
     
 }
 
+
+#pragma mark - Key / Value Observing
+
+- (NSUInteger)countOfMediaItems {
+    return self.mediaItems.count;
+}
+
+
+- (id)objectInMediaItemsAtIndex:(NSUInteger)index {
+    return [self.mediaItems objectAtIndex:index];
+}
+
+
+- (NSArray *)mediaItemsAtIndexes:(NSIndexSet *)indexes {
+    return [self.mediaItems objectsAtIndexes:indexes];
+}
+
+
+#pragma mark - Mutable Accessor Methods for KVC
+
+- (void)insertObject:(Media *)object inMediaItemsAtIndex:(NSUInteger)index {
+    [_mediaItems insertObject:object atIndex:index];
+}
+
+
+- (void)removeObjectFromMediaItemsAtIndex:(NSUInteger)index {
+    [_mediaItems removeObjectAtIndex:index];
+}
+
+
+- (void)replaceObjectInMediaItemsAtIndex:(NSUInteger)index withObject:(id)object {
+    [_mediaItems replaceObjectAtIndex:index withObject:object];
+}
+
+
+#pragma mark - Delete Method for KVO
+
+- (void)deleteMediaItem:(Media *)item {
+    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+    [mutableArrayWithKVO removeObject:item];
+}
 
 @end

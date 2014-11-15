@@ -35,6 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil];
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
 }
 
@@ -76,9 +77,60 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Media *item = [self items][indexPath.row];
         
-        [[DataSource sharedInstance] removeItem:item];
-        [self.tableView reloadData];
+       // [[DataSource sharedInstance] removeItem:item];
+       // [self.tableView reloadData];
+        [[DataSource sharedInstance] deleteMediaItem:item];
     }
+}
+
+
+#pragma mark - KVO Handling Methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (object == [DataSource sharedInstance] && [keyPath isEqualToString:@"mediaItems"]) {
+        // determine what kind of change it is
+        int kindOfChange = [change[NSKeyValueChangeKindKey] intValue];
+        
+        if (kindOfChange == NSKeyValueChangeSetting) {
+            // Someone set a brand new immage array
+            [self.tableView reloadData];
+        } else if ((kindOfChange == NSKeyValueChangeInsertion) ||
+                   (kindOfChange == NSKeyValueChangeRemoval) ||
+                   (kindOfChange == NSKeyValueChangeReplacement)) {
+            // if its an insertion, removal, or replacement get a list of the index/indices
+            NSIndexSet *indexSetOfChanges = change[NSKeyValueChangeIndexesKey];
+            
+            // Convert the NSIndexSet to an NSArray of NSIndexedPaths
+            NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
+            [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                [indexPathsThatChanged addObject:newIndexPath];
+            }];
+            
+            // Call BeginUpdate to tell the tableView we're about to make changes
+            [self.tableView beginUpdates];
+            
+            // then tell the tableView what the specific changes are
+            if (kindOfChange == NSKeyValueChangeInsertion) {
+                [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeRemoval) {
+                [self.tableView deleteRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeReplacement) {
+                [self.tableView reloadRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+            
+            // Tell the tableView that we have completed telling about changes - completes the animation
+            [self.tableView endUpdates];
+        }
+    }
+}
+
+
+#pragma mark - KVO Removal
+
+- (void)dealloc {
+    [[DataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
 }
 
 @end
