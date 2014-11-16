@@ -17,6 +17,8 @@
 {
                           NSMutableArray *_mediaItems;
 }
+@property (nonatomic, assign) BOOL isRefreshing;        // Used for Pull to Refresh
+@property (nonatomic, assign) BOOL isLoadingOlderItems; // Used for Infinite Scrolling
 @end
 
 @implementation DataSource
@@ -105,14 +107,8 @@
     
     comment.from = [self randomUser];
     NSUInteger wordCount = arc4random_uniform(20);
-    NSMutableString *randomSentence = [[NSMutableString alloc] init];
-    
-    for (int i = 0; i <= wordCount; i++) {
-        NSString *randomWord = [self randomStringOfLength:arc4random_uniform(12)];
-        [randomSentence appendFormat:@"%@", randomWord];
-    }
-    
-    comment.text = randomSentence;
+    comment.text = [self randomSentenceWithMaximumNumberOfWords:wordCount];
+
     return comment;
 }
 
@@ -129,6 +125,18 @@
     
     return returnString;
     
+}
+
+
+- (NSString *)randomSentenceWithMaximumNumberOfWords:(NSUInteger)wordCount {
+    NSMutableString *randomSentence = [[NSMutableString alloc] init];
+    
+    for (int i = 0; i <= wordCount; i++) {
+        NSString *randomWord = [self randomStringOfLength:arc4random_uniform(12)];
+        [randomSentence appendFormat:@"%@ ", randomWord];
+    }
+    
+    return randomSentence;
 }
 
 
@@ -171,6 +179,64 @@
 - (void)deleteMediaItem:(Media *)item {
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
     [mutableArrayWithKVO removeObject:item];
+}
+
+
+#pragma mark - Pull To Refresh & Infinite Scrolling Methods
+
+- (void)requestNewItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler {
+    if (!self.isRefreshing) {
+        self.isRefreshing = YES;
+        Media *media = [[Media alloc] init];
+        media.user = [self randomUser];
+        media.image = [UIImage imageNamed:@"10.jpg"];
+        media.caption = [self randomSentenceWithMaximumNumberOfWords:arc4random_uniform(7)];
+        
+        NSMutableArray *randomComments = [NSMutableArray array];
+        int commentCount = arc4random_uniform(3);
+        for (int i = 0; i <= commentCount; i++) {
+            Comment *randomComment = [self randomComment];
+            [randomComments addObject:randomComment];
+        }
+        media.comments = randomComments;
+        
+        NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+        [mutableArrayWithKVO insertObject:media atIndex:0];
+        
+        self.isRefreshing = NO;
+        if (completionHandler) {
+            completionHandler(nil);
+        }
+    }
+}
+
+
+- (void)requestOldItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler {
+    if (!self.isLoadingOlderItems) {
+        self.isLoadingOlderItems = YES;
+        
+        Media *media = [[Media alloc] init];
+        media.user = [self randomUser];
+        media.image = [UIImage imageNamed:@"1.jpg"];
+        media.caption = [self randomSentenceWithMaximumNumberOfWords:arc4random_uniform(7)];
+        
+        NSMutableArray *randomComments = [NSMutableArray array];
+        int commentCount = arc4random_uniform(3);
+        for (int i = 0; i <= commentCount; i++) {
+            Comment *randomComment = [self randomComment];
+            [randomComments addObject:randomComment];
+        }
+        media.comments = randomComments;
+        
+        NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+        [mutableArrayWithKVO addObject:media];
+        
+        self.isLoadingOlderItems = NO;
+        
+        if (completionHandler) {
+            completionHandler(nil);
+        }
+    }
 }
 
 @end

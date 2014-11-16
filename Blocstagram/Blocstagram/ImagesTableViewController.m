@@ -36,7 +36,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
+}
+
+
+#pragma mark - Pull To Refresh Method
+
+- (void)refreshControlDidFire:(UIRefreshControl *)sender {
+    [[DataSource sharedInstance] requestNewItemsWithCompletionHandler:^(NSError *error) {
+        [sender endRefreshing];
+    }];
 }
 
 
@@ -84,7 +95,7 @@
 }
 
 
-#pragma mark - KVO Handling Methods
+#pragma mark - KVO Handling Methods for Pull to Refresh
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -124,6 +135,29 @@
             [self.tableView endUpdates];
         }
     }
+}
+
+
+#pragma mark - Infinite Scrolling Methods with UIScrollView Delegate
+
+- (void)infiniteScrollIfNecessary {
+    NSIndexPath *bottomIndexPath = [[self.tableView indexPathsForVisibleRows] lastObject];
+    
+    if (bottomIndexPath && bottomIndexPath.row == [self items].count -1) {
+        // if the very last cell is on the screen
+        [[DataSource sharedInstance] requestOldItemsWithCompletionHandler:nil];
+    }
+}
+
+/*
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self infiniteScrollIfNecessary];
+}
+*/
+
+// Using a different delegate method to reduce the number of times we call infiniteScrollIfNecessary
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self infiniteScrollIfNecessary];
 }
 
 
