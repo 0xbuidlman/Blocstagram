@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "ImagesTableViewController.h"
+#import "LoginViewController.h"
+#import "DataSource.h"
 
 @interface AppDelegate ()
 
@@ -18,8 +20,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[ImagesTableViewController alloc] init] ];
-    self.window.backgroundColor = [UIColor colorWithRed:0.667 green:1.000 blue:0.643 alpha:1.000];
+    
+    [DataSource sharedInstance];
+    
+    UINavigationController *navViewController = [[UINavigationController alloc] init];
+    LoginViewController *loginViewController = [[LoginViewController alloc] init];
+    
+    [navViewController setViewControllers:@[loginViewController] animated:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:LoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        ImagesTableViewController *imagesViewController = [[ImagesTableViewController alloc] init];
+        [navViewController setViewControllers:@[imagesViewController] animated:YES];
+    }];
+    
+    self.window.rootViewController = navViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }

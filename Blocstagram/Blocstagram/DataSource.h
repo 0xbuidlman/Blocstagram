@@ -14,7 +14,9 @@ typedef void (^NewItemCompletionBlock)(NSError *error);
 @interface DataSource : NSObject
 
 @property (nonatomic, readonly) NSArray *mediaItems;
+@property (nonatomic, readonly) NSString *accessToken;
 
++ (NSString *)instagramClientID;
 + (instancetype)sharedInstance;
 - (void)removeItem:(Media *)item; // legacy method
 - (void)deleteMediaItem:(Media *)item;
