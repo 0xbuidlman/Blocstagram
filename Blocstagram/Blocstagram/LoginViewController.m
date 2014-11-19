@@ -12,13 +12,14 @@
 @interface LoginViewController () <UIWebViewDelegate>
 
 @property (nonatomic, weak) UIWebView *webView;
+@property (nonatomic, assign) BOOL isLoginPage;
 
 @end
 
 @implementation LoginViewController
 
 NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewControllerDidGetAccessTokenNotification";
-
+NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 
 #pragma mark - View Lifecycle
 
@@ -33,14 +34,9 @@ NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewCo
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"Login";
     
-    NSString *urlString = [NSString stringWithFormat:@"https://instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=token", [DataSource instagramClientID], [self redirectURI]];
-    NSURL *url = [NSURL URLWithString:urlString];
-    
-    if (url) {
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        [self.webView loadRequest:request];
-    }
+    [self gotoLoginPage];
 }
 
 
@@ -49,11 +45,34 @@ NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewCo
 }
 
 
+-(void)gotoLoginPage {
+    NSString *urlString = [NSString stringWithFormat:@"https://instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=token", [DataSource instagramClientID], [self redirectURI]];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    if (url) {
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        [self.webView loadRequest:request];
+    }
+    self.isLoginPage = YES;
+}
+
+
+- (void)goBackToLogin:(id)sender {
+    [self gotoLoginPage];
+}
+
 
 #pragma mark - WebView Delegate Methods
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
                                                  navigationType:(UIWebViewNavigationType)navigationType {
+    if (![[request.URL absoluteString] hasPrefix:loginPageStart]) {
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc]initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(goBackToLogin:)];
+        
+        self.navigationItem.leftBarButtonItem = backButton;
+        self.isLoginPage = NO;
+    }
+ 
     NSString *urlString = request.URL.absoluteString;
     if ([urlString hasPrefix:[self redirectURI]]) {
         // This contains our auth token
