@@ -41,7 +41,7 @@ NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 
 
 - (NSString *)redirectURI {
-    return @"http://ddApps.co/blocstagram";
+    return @"blocstagram://auth/instagram";
 }
 
 
@@ -67,9 +67,9 @@ NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
                                                  navigationType:(UIWebViewNavigationType)navigationType {
     if (![[request.URL absoluteString] hasPrefix:loginPageStart]) {
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc]initWithTitle:@"Back" style:UIBarButtonItemStyleDone target:self action:@selector(goBackToLogin:)];
+        UIBarButtonItem *homeButton = [[UIBarButtonItem alloc]initWithTitle:@"Home" style:UIBarButtonItemStyleDone target:self action:@selector(goBackToLogin:)];
         
-        self.navigationItem.leftBarButtonItem = backButton;
+        self.navigationItem.leftBarButtonItem = homeButton;
         self.isLoginPage = NO;
     }
  

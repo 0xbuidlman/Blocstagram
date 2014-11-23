@@ -18,7 +18,6 @@ typedef void (^NewItemCompletionBlock)(NSError *error);
 
 + (NSString *)instagramClientID;
 + (instancetype)sharedInstance;
-- (void)removeItem:(Media *)item; // legacy method
 - (void)deleteMediaItem:(Media *)item;
 
 - (void)requestNewItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler;

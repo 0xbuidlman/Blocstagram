@@ -145,8 +145,13 @@ static NSParagraphStyle *paragraphStyle;
     self.userNameAndCaptionLabel.attributedText = [self userNameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     
-    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width
-                                                                * CGRectGetWidth(self.contentView.bounds);
+    // If we have an image calculate the height otherwise the height is zero (prevent division by zero crash)
+    if (_mediaItem.image) {
+        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width
+        * CGRectGetWidth(self.contentView.bounds);
+    } else {
+        self.imageHeightConstraint.constant = 0;
+    }
 }
 
 
@@ -203,6 +208,18 @@ static NSParagraphStyle *paragraphStyle;
     [layoutCell layoutIfNeeded];
     
     return CGRectGetMaxY(layoutCell.commentLabel.frame);
+}
+
+
+#pragma mark - Disabling Set Selection
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+}
+
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:NO animated:animated];
 }
 
 @end

@@ -72,12 +72,6 @@
 }
 
 
-- (NSArray *)items {
-    return [DataSource sharedInstance].mediaItems;
-}
-
-
-
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     Media *item = [self items][indexPath.row];
     if (item) return YES;
@@ -88,10 +82,17 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Media *item = [self items][indexPath.row];
-        
-       // [[DataSource sharedInstance] removeItem:item];
-       // [self.tableView reloadData];
         [[DataSource sharedInstance] deleteMediaItem:item];
+    }
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Media *item = [self items][indexPath.row];
+    if (item.image) {
+        return 350;
+    } else {
+        return 150;
     }
 }
 
@@ -166,6 +167,13 @@
 
 - (void)dealloc {
     [[DataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
+}
+
+
+#pragma mark - Convenience Methods
+
+- (NSArray *)items {
+    return [DataSource sharedInstance].mediaItems;
 }
 
 @end
