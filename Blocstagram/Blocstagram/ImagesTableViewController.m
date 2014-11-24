@@ -40,6 +40,9 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
+    
+    // Add this in order to get something on launch
+    [[DataSource sharedInstance] requestNewItemsWithCompletionHandler:nil];
 }
 
 

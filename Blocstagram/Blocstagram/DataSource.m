@@ -116,19 +116,17 @@
         self.isRefreshing = YES;
         
         NSString *minID = [[self.mediaItems firstObject] idNumber];
+        NSDictionary *parameters = [NSDictionary dictionary];
         if (minID) {
-            NSDictionary *parameters = @{@"min_id": minID};
-            
-            [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
-                self.isRefreshing = NO;
-                
-                if (completionHandler) {
-                    completionHandler(error);
-                }
-            }];
-        } else {
-            self.isRefreshing = NO;
+            parameters = @{@"min_id": minID};
         }
+        [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
+            self.isRefreshing = NO;
+            
+            if (completionHandler) {
+                completionHandler(error);
+            }
+        }];
     }
 }
 
@@ -151,7 +149,6 @@
 
 #pragma mark - Instagram API Requests
 
-//- (void)populateDataWithParameters:(NSDictionary *)parameters {
 - (void)populateDataWithParameters:(NSDictionary *)parameters completionHandler:(NewItemCompletionBlock)completionHandler {
     if (self.accessToken) {
         // only try to get the data if there's an access token
@@ -176,7 +173,24 @@
                 NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&webError];
                 
                 if (responseData) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSError *jsonError;
+                        NSDictionary *feedDictionary = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&jsonError];
+                        
+                        if (feedDictionary) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                // done networking, go back on the main thread
+                                [self parseDataFromFeedDictionary:feedDictionary fromRequestWithParameters:parameters];
+                                if (completionHandler) {
+                                    completionHandler(nil);
+                                }
+                            });
+                        } else if (completionHandler) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                completionHandler(jsonError);
+                            });
+                        }
+                    } else if (completionHandler) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
                         completionHandler(webError);
                     });
                 }
@@ -188,7 +202,6 @@
 
 - (void)parseDataFromFeedDictionary:(NSDictionary *) feedDictionary fromRequestWithParameters:(NSDictionary *)parameters {
     NSArray *mediaArray = feedDictionary[@"data"];
-    NSLog(@"mediaArray = %@", mediaArray);
     
     NSMutableArray *tmpMediaItems = [NSMutableArray array];
     for (NSDictionary *mediaDictionary in mediaArray) {
