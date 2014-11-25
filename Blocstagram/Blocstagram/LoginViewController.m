@@ -66,11 +66,14 @@ NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
                                                  navigationType:(UIWebViewNavigationType)navigationType {
-    if (![[request.URL absoluteString] hasPrefix:loginPageStart]) {
+    if ( ![[request.URL absoluteString] containsString:@"login"]
+        && ![[request.URL absoluteString] containsString:loginPageStart] ) {
         UIBarButtonItem *homeButton = [[UIBarButtonItem alloc]initWithTitle:@"Home" style:UIBarButtonItemStyleDone target:self action:@selector(goBackToLogin:)];
         
         self.navigationItem.leftBarButtonItem = homeButton;
         self.isLoginPage = NO;
+    } else {
+        self.navigationItem.leftBarButtonItem = nil;
     }
  
     NSString *urlString = request.URL.absoluteString;
