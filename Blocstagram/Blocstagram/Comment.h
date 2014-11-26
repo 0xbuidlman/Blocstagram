@@ -11,7 +11,7 @@
 
 @class User;
 
-@interface Comment : NSObject
+@interface Comment : NSObject <NSCoding>
 
 @property (nonatomic) NSString *idNumber;
 @property (nonatomic) User *from;

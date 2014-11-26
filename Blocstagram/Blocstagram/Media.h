@@ -11,7 +11,7 @@
 
 @class User;
 
-@interface Media : NSObject
+@interface Media : NSObject <NSCoding>
 
 @property (nonatomic) NSString *idNumber;
 @property (nonatomic) User *user;
