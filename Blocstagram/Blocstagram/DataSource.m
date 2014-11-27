@@ -47,7 +47,6 @@
         if (!self.accessToken) {
             [self registerForAccessTokenNotification];
         } else {
-            [self populateDataWithParameters:nil completionHandler:nil];
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
                 NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
@@ -59,9 +58,8 @@
                         [self willChangeValueForKey:@"mediaItems"];
                         _mediaItems = mutableMediaItems;
                         [self didChangeValueForKey:@"mediaItems"];
-                    } else {
-                        [self populateDataWithParameters:nil completionHandler:nil];
                     }
+                    [self populateDataWithParameters:nil completionHandler:nil];
                 });
             });
         }
@@ -297,7 +295,11 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
                         NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
-                        [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+                        if (index < mutableArrayWithKVO.count) { // Have seen very large index numbers
+                            [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+                        } else {
+                            NSLog(@"index OOB protection");
+                        }
                     });
                 }
             } else {
