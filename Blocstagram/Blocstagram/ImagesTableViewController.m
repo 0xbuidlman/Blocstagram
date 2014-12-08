@@ -12,8 +12,14 @@
 #import "User.h"
 #import "Comment.h"
 #import "MediaTableViewCell.h"
+#import "MediaFullScreenViewController.h"
+#import "MediaFullScreenAnimator.h"
+#import "MediaShare.h"
 
-@interface ImagesTableViewController ()
+@interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate>
+
+// Track which view was tapped most recently
+@property (nonatomic, weak) UIImageView *lastTappedImageView;
 
 @end
 
@@ -64,6 +70,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MediaTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"mediaCell" forIndexPath:indexPath];
+    cell.delegate = self;
     cell.mediaItem = [self items][indexPath.row];
     return cell;
 }
@@ -177,6 +184,46 @@
 
 - (NSArray *)items {
     return [DataSource sharedInstance].mediaItems;
+}
+
+
+#pragma mark - TableViewCell Delegate Method
+
+- (void)cell:(MediaTableViewCell *)cell didTapImageView:(UIImageView *)imageView {
+    self.lastTappedImageView = imageView;
+    MediaFullScreenViewController *fullScreenViewController =
+                                    [[MediaFullScreenViewController alloc] initWithMedia:cell.mediaItem];
+    
+    fullScreenViewController.transitioningDelegate = self;
+    
+    // Does not work with UIModalPresentationCustom - get a blank screen in the dismiss
+    fullScreenViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    
+    [self presentViewController:fullScreenViewController animated:YES completion:nil];
+}
+
+
+- (void)cell:(MediaTableViewCell *)cell didLongPressImageView:(UIImageView *)imageView {
+    [MediaShare share:self withCaption:cell.mediaItem.caption withImage:cell.mediaItem.image];
+}
+
+
+#pragma mark - View Controller Transitioning Delegate Methods
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+                                                                  presentingController:(UIViewController *)presenting
+                                                                      sourceController:(UIViewController *)source {
+    MediaFullScreenAnimator *animator = [[MediaFullScreenAnimator alloc] init];
+    animator.presenting = YES;
+    animator.cellImageView = self.lastTappedImageView;
+    return animator;
+}
+
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    MediaFullScreenAnimator *animator = [[MediaFullScreenAnimator alloc] init];
+    animator.cellImageView = self.lastTappedImageView;
+    return animator;
 }
 
 @end
