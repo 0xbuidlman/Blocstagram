@@ -208,6 +208,13 @@
 }
 
 
+// reload image
+- (void)didDoubleTapCell:(MediaTableViewCell *)cell {
+    NSLog(@"Retry image download");
+    [[DataSource sharedInstance] downloadImageForMediaItem:cell.mediaItem];
+}
+
+
 #pragma mark - View Controller Transitioning Delegate Methods
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
