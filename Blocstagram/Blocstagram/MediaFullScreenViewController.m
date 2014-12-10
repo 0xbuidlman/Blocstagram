@@ -75,7 +75,7 @@
     
     [shareButton setTitle:@"Share" forState:UIControlStateNormal];
     shareButton.frame = CGRectMake(300.0, 40.0, 80.0, 80.0);
-    [self.scrollView addSubview:shareButton];
+    [self.view addSubview:shareButton];
 }
 
 
@@ -120,7 +120,7 @@
     }
     
     if (contentsFrame.size.height < boundsSize.height) {
-        contentsFrame.origin.y = ((boundsSize.width - CGRectGetHeight(contentsFrame)) / 2)+40;
+        contentsFrame.origin.y = ((boundsSize.height - CGRectGetHeight(contentsFrame)) / 2);
     } else {
         contentsFrame.origin.y = 0;
     }
