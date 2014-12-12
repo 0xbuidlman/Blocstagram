@@ -8,6 +8,7 @@
 
 #import "MediaFullScreenAnimator.h"
 #import "MediaFullScreenViewController.h"
+#import "Constants.h"
 
 @implementation MediaFullScreenAnimator
 
@@ -15,7 +16,7 @@
 #pragma mark - Animation Duration
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.3;
+    return kTransitionDuration;
 }
 
 

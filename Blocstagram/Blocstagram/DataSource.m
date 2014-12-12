@@ -14,6 +14,7 @@
 #import "LoginViewController.h"
 #import <UICKeyChainStore.h>
 #import <AFNetworking/AFNetworking.h>
+#import "Constants.h"
 
 @interface DataSource()
 {
@@ -44,7 +45,7 @@
     self = [super init];
     
     if (self) {
-        NSURL *baseURL = [NSURL URLWithString:@"https://api.instagram.com/v1/"];
+        NSURL *baseURL = [NSURL URLWithString:kInstagramAPI];
         self.instagramOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
         
         AFJSONResponseSerializer *jsonSerializer = [AFJSONResponseSerializer serializer];
@@ -54,7 +55,7 @@
         AFCompoundResponseSerializer *serializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[jsonSerializer, imageSerializer]];
         self.instagramOperationManager.responseSerializer = serializer;
         
-        self.accessToken = [UICKeyChainStore stringForKey:@"access token"];
+        self.accessToken = [UICKeyChainStore stringForKey:kKeyChainAccessToken];
         
         if (!self.accessToken) {
             [self registerForAccessTokenNotification];
@@ -83,7 +84,7 @@
 #pragma mark - the Instagram Client ID
 
 +(NSString *)instagramClientID {
-    return @"b9f77d8242aa430790426b886687d183";
+    return kInstagramClientID;
 }
 
 
@@ -91,7 +92,7 @@
 - (void)registerForAccessTokenNotification {
     [[NSNotificationCenter defaultCenter] addObserverForName:LoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         self.accessToken = note.object;
-        [UICKeyChainStore setString:self.accessToken forKey:@"access token"];
+        [UICKeyChainStore setString:self.accessToken forKey:kKeyChainAccessToken];
     }];
     
     // Received token now populate the initial data
@@ -188,10 +189,10 @@
     if (self.accessToken) {
         // only try to get the data if there's an access token
         
-        NSMutableDictionary *mutableParameters = [@{@"access_token":self.accessToken} mutableCopy];
+        NSMutableDictionary *mutableParameters = [@{kKeyChainAccessToken:self.accessToken} mutableCopy];
         [mutableParameters addEntriesFromDictionary:parameters];
         
-        [self.instagramOperationManager GET:@"users/self/feed"
+        [self.instagramOperationManager GET:kInstagramUserGetPath
                                  parameters:mutableParameters
                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                         if ([responseObject isKindOfClass:[NSDictionary class]]) {
@@ -218,8 +219,7 @@
         Media *mediaItem = [[Media alloc] initWithDictionary:mediaDictionary];
         if (mediaItem) {
             [tmpMediaItems addObject:mediaItem];
-// temporary fot testing
-//            [self downloadImageForMediaItem:mediaItem];
+            [self downloadImageForMediaItem:mediaItem];
         }
     }
     
@@ -235,7 +235,7 @@
         // This was an infinite scroll request
         if (tmpMediaItems.count == 0) {
             // disable infinite scroll since there are no more older messages
-            self. thereAreNoMoreOlderMessages = YES;
+            self.thereAreNoMoreOlderMessages = YES;
         }
         
         [mutableArrayWithKVO addObjectsFromArray:tmpMediaItems];

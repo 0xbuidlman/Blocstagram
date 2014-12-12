@@ -10,6 +10,7 @@
 #import "Media.h"
 #import "Comment.h"
 #import "User.h"
+#import "Constants.h"
 
 @interface MediaTableViewCell() <UIGestureRecognizerDelegate>
 @property (nonatomic) UIImageView *mediaImageView;
@@ -38,8 +39,8 @@ static NSParagraphStyle *paragraphStyle;
 #pragma mark - View Lifecycle
 
 + (void)load {
-    lightFont = [UIFont fontWithName:@"HelveticaNeue-Thin" size:11];
-    boldFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11];
+    lightFont = [UIFont fontWithName:kLightFont size:11];
+    boldFont = [UIFont fontWithName:kBoldFont size:11];
     userNameLabelGrey = [UIColor colorWithRed:0.933 green:0.933 blue:0.933 alpha:1];
     commentLabelGrey = [UIColor colorWithRed:0.898 green:0.898 blue:0.898 alpha:1];
     linkColor = [UIColor colorWithRed:0.541 green:0.494 blue:0.677 alpha:1.000];
@@ -156,7 +157,7 @@ static NSParagraphStyle *paragraphStyle;
         self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width
         * CGRectGetWidth(self.contentView.bounds);
     } else {
-        self.imageHeightConstraint.constant = 0;
+        self.imageHeightConstraint.constant = 300;
     }
     
     // Hide the line between cells

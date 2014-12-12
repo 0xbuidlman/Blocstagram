@@ -15,6 +15,7 @@
 #import "MediaFullScreenViewController.h"
 #import "MediaFullScreenAnimator.h"
 #import "MediaShare.h"
+#import "Constants.h"
 
 @interface ImagesTableViewController () <MediaTableViewCellDelegate, UIViewControllerTransitioningDelegate>
 
@@ -24,7 +25,6 @@
 @end
 
 @implementation ImagesTableViewController
-
 
 
 #pragma mark - View Lifecycle Methods
@@ -41,7 +41,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Blocstagram";
+    self.title = kAppTitle;
     [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil];
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
@@ -66,10 +66,12 @@
 - (void)tableView:(UITableView *)tableView
   willDisplayCell:(UITableViewCell *)cell
 forRowAtIndexPath:(NSIndexPath *)indexPath {
-    Media *mediaItem = [self items][indexPath.row];
-    if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
-        [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
-    }
+    // NOTE: instead of loading images here - we'll move that to loading images for
+    // the cells currently visible on the screen starting when the scrolling slows down.
+//    Media *mediaItem = [self items][indexPath.row];
+//    if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
+//        [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+//    }
 }
 
 
@@ -180,6 +182,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 // Using a different delegate method to reduce the number of times we call infiniteScrollIfNecessary
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self infiniteScrollIfNecessary];
+}
+
+
+// Do not load images if the user is scrolling past them in order to reduce jerkiness
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    if ((scrollView.decelerationRate == UIScrollViewDecelerationRateNormal) && (!scrollView.dragging)) {
+        
+        // Load media items for only those cells that are visible
+        NSArray *visibleCells = [self.tableView visibleCells];
+        for (MediaTableViewCell *cell in visibleCells) {
+            [[DataSource sharedInstance] downloadImageForMediaItem:cell.mediaItem];
+        }
+    }
 }
 
 
