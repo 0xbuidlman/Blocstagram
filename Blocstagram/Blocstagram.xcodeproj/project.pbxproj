@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6C05486F1A3BBFBA0060A521 /* CircleSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C05486E1A3BBFBA0060A521 /* CircleSpinnerView.m */; };
+		6C0548721A3F5B8B0060A521 /* LikeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C0548711A3F5B8B0060A521 /* LikeButton.m */; };
 		6CAE6E881A334E3200D9F6A4 /* MediaFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE6E871A334E3200D9F6A4 /* MediaFullScreenViewController.m */; };
 		6CAE6E8B1A33C9C100D9F6A4 /* MediaFullScreenAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE6E8A1A33C9C100D9F6A4 /* MediaFullScreenAnimator.m */; };
 		6CAE6E8E1A35EA5100D9F6A4 /* MediaShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CAE6E8D1A35EA5100D9F6A4 /* MediaShare.m */; };
@@ -49,6 +51,10 @@
 /* Begin PBXFileReference section */
 		5CCFA38C3937FDD10861E9AF /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		6C05486C1A3A08BE0060A521 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		6C05486D1A3BBFBA0060A521 /* CircleSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleSpinnerView.h; sourceTree = "<group>"; };
+		6C05486E1A3BBFBA0060A521 /* CircleSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleSpinnerView.m; sourceTree = "<group>"; };
+		6C0548701A3F5B8B0060A521 /* LikeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LikeButton.h; sourceTree = "<group>"; };
+		6C0548711A3F5B8B0060A521 /* LikeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LikeButton.m; sourceTree = "<group>"; };
 		6CAE6E861A334E3200D9F6A4 /* MediaFullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaFullScreenViewController.h; sourceTree = "<group>"; };
 		6CAE6E871A334E3200D9F6A4 /* MediaFullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaFullScreenViewController.m; sourceTree = "<group>"; };
 		6CAE6E891A33C9C100D9F6A4 /* MediaFullScreenAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaFullScreenAnimator.h; sourceTree = "<group>"; };
@@ -162,6 +168,10 @@
 				6CB862631A0E7002006488B8 /* Comment.m */,
 				6CB862651A0E711D006488B8 /* DataSource.h */,
 				6CB862661A0E711D006488B8 /* DataSource.m */,
+				6C05486D1A3BBFBA0060A521 /* CircleSpinnerView.h */,
+				6C05486E1A3BBFBA0060A521 /* CircleSpinnerView.m */,
+				6C0548701A3F5B8B0060A521 /* LikeButton.h */,
+				6C0548711A3F5B8B0060A521 /* LikeButton.m */,
 				6C05486C1A3A08BE0060A521 /* Constants.h */,
 				6CCD10501A0D5C7600CB84DD /* Images.xcassets */,
 				6CCD10521A0D5C7600CB84DD /* LaunchScreen.xib */,
@@ -378,12 +388,14 @@
 				6CB862611A0E6DF3006488B8 /* Media.m in Sources */,
 				6CB8626A1A0EE93E006488B8 /* MediaTableViewCell.m in Sources */,
 				6CB862671A0E711D006488B8 /* DataSource.m in Sources */,
+				6C05486F1A3BBFBA0060A521 /* CircleSpinnerView.m in Sources */,
 				6CC4779D1A1956D300804E9B /* LoginViewController.m in Sources */,
 				6CB8625E1A0E6C60006488B8 /* User.m in Sources */,
 				6CCD104C1A0D5C7600CB84DD /* ViewController.m in Sources */,
 				6CAE6E881A334E3200D9F6A4 /* MediaFullScreenViewController.m in Sources */,
 				6CCD10491A0D5C7600CB84DD /* AppDelegate.m in Sources */,
 				6CCD10461A0D5C7600CB84DD /* main.m in Sources */,
+				6C0548721A3F5B8B0060A521 /* LikeButton.m in Sources */,
 				6CAE6E8B1A33C9C100D9F6A4 /* MediaFullScreenAnimator.m in Sources */,
 				6CCD10801A0D5E0B00CB84DD /* ImagesTableViewController.m in Sources */,
 				6CAE6E8E1A35EA5100D9F6A4 /* MediaShare.m in Sources */,

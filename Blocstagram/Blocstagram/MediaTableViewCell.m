@@ -11,19 +11,24 @@
 #import "Comment.h"
 #import "User.h"
 #import "Constants.h"
+#import "LikeButton.h"
 
 @interface MediaTableViewCell() <UIGestureRecognizerDelegate>
 @property (nonatomic) UIImageView *mediaImageView;
 @property (nonatomic) UILabel *userNameAndCaptionLabel;
 @property (nonatomic) UILabel *commentLabel;
+@property (nonatomic) LikeButton *likeButton;
 
 // Auto-Layout Constraints
 @property (nonatomic) NSLayoutConstraint *imageHeightConstraint;
 @property (nonatomic) NSLayoutConstraint *userNameAndCaptionLabelHeightConstraint;
 @property (nonatomic) NSLayoutConstraint *commentLabelHeightConstraint;
+
+// Gesture Recognizers
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic) UITapGestureRecognizer *doubleTapGestureRecognizer;
+
 @end
 
 static UIFont *lightFont;
@@ -78,23 +83,34 @@ static NSParagraphStyle *paragraphStyle;
         self.userNameAndCaptionLabel = [[UILabel alloc] init];
         self.commentLabel = [[UILabel alloc] init];
         self.commentLabel.numberOfLines = 0;
+        self.commentLabel.backgroundColor = commentLabelGrey;
         
-        for (UIView *view in @[self.mediaImageView, self.userNameAndCaptionLabel, self.commentLabel]) {
+        self.likeButton = [[LikeButton alloc] init];
+        [self.likeButton addTarget:self action:@selector(likePressed:) forControlEvents:UIControlEventTouchUpInside];
+        self.likeButton.backgroundColor = userNameLabelGrey;
+        
+        for (UIView *view in @[self.mediaImageView, self.userNameAndCaptionLabel, self.commentLabel, self.likeButton]) {
             [self.contentView addSubview:view];
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
         
-        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _userNameAndCaptionLabel, _commentLabel);
+        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _userNameAndCaptionLabel, _commentLabel, _likeButton);
         
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|"
                                                                                 options:kNilOptions
                                                                                 metrics:nil
                                                                                   views:viewDictionary]];
-        
+        /*
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_userNameAndCaptionLabel]|"
                                                                                 options:kNilOptions
                                                                                 metrics:nil
-                                                                                  views:viewDictionary]];
+                                                                                  views:viewDictionary]]; */
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_userNameAndCaptionLabel][_likeButton(==38)]|"
+                                                                                 options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom
+                                                                                 metrics:nil
+                                                                                   views:viewDictionary]];
+        
         
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|"
                                                                                  options:kNilOptions
@@ -173,6 +189,7 @@ static NSParagraphStyle *paragraphStyle;
     self.mediaImageView.image = _mediaItem.image;
     self.userNameAndCaptionLabel.attributedText = [self userNameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
+    self.likeButton.likeButtonState = mediaItem.likeState;
 }
 
 
@@ -259,6 +276,13 @@ static NSParagraphStyle *paragraphStyle;
 
 - (void)doubleTapFired:(UITapGestureRecognizer *)sender {
     [self.delegate didDoubleTapCell:self];
+}
+
+
+#pragma mark - Liking Action Method
+
+- (void)likePressed:(UIButton *)sender {
+    [self.delegate cellDidPressLikeButton:self];
 }
 
 

@@ -240,6 +240,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
+// like button
+- (void)cellDidPressLikeButton:(MediaTableViewCell *)cell {
+    [[DataSource sharedInstance] toggleLikeOnMediaItem:cell.mediaItem];
+}
+
+
 #pragma mark - View Controller Transitioning Delegate Methods
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented

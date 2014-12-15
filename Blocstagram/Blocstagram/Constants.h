@@ -16,6 +16,9 @@ static NSString *kInstagramUserGetPath = @"users/self/feed";
 static NSString *kKeyChainAccessToken = @"access_token";
 static NSString *kInstagramClientID = @"b9f77d8242aa430790426b886687d183";
 
+static NSString *kLikedStateImage = @"heart-full";
+static NSString *kUnlikedStateImage = @"heart-empty";
+
 // Font Constants
 static NSString *kLightFont = @"HelveticaNeue-Thin";
 static NSString *kBoldFont = @"HelveticaNeue-Bold";

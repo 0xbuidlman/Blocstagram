@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "LikeButton.h"
 
 typedef NS_ENUM(NSInteger, MediaDownloadState) {
     MediaDownloadStateNeedsImage            = 0,
@@ -27,6 +28,7 @@ typedef NS_ENUM(NSInteger, MediaDownloadState) {
 @property (nonatomic, assign) MediaDownloadState downloadState;
 @property (nonatomic) NSString *caption;
 @property (nonatomic) NSArray *comments;
+@property (nonatomic) LikeState likeState;
 
 - (instancetype)initWithDictionary:(NSDictionary *)mediaDictionary;
 

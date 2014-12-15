@@ -8,6 +8,7 @@
 
 #import "LoginViewController.h"
 #import "DataSource.h"
+//#import "Constants.h"
 
 @interface LoginViewController () <UIWebViewDelegate>
 
@@ -18,8 +19,10 @@
 
 @implementation LoginViewController
 
+
 NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewControllerDidGetAccessTokenNotification";
-NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
+NSString *const kLoginPageStart = @"https://instagram.com/oauth/authorize/";
+NSString *const kLoginStringFormat = @"https://instagram.com/oauth/authorize/?client_id=%@&scope=likes+comments+relationships&redirect_uri=%@&response_type=token";
 
 #pragma mark - View Lifecycle
 
@@ -46,7 +49,7 @@ NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 
 
 -(void)gotoLoginPage {
-    NSString *urlString = [NSString stringWithFormat:@"https://instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=token", [DataSource instagramClientID], [self redirectURI]];
+    NSString *urlString = [NSString stringWithFormat:kLoginStringFormat, [DataSource instagramClientID], [self redirectURI]];
     NSURL *url = [NSURL URLWithString:urlString];
     
     if (url) {
@@ -67,7 +70,7 @@ NSString *loginPageStart = @"https://instagram.com/oauth/authorize/";
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
                                                  navigationType:(UIWebViewNavigationType)navigationType {
     if ( ![[request.URL absoluteString] containsString:@"login"]
-        && ![[request.URL absoluteString] containsString:loginPageStart] ) {
+        && ![[request.URL absoluteString] containsString:kLoginPageStart] ) {
         UIBarButtonItem *homeButton = [[UIBarButtonItem alloc]initWithTitle:@"Home" style:UIBarButtonItemStyleDone target:self action:@selector(goBackToLogin:)];
         
         self.navigationItem.leftBarButtonItem = homeButton;
