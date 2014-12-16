@@ -8,7 +8,7 @@
 
 #import "LoginViewController.h"
 #import "DataSource.h"
-//#import "Constants.h"
+#import "Constants.h"
 
 @interface LoginViewController () <UIWebViewDelegate>
 
@@ -19,10 +19,6 @@
 
 @implementation LoginViewController
 
-
-NSString *const LoginViewControllerDidGetAccessTokenNotification = @"LoginViewControllerDidGetAccessTokenNotification";
-NSString *const kLoginPageStart = @"https://instagram.com/oauth/authorize/";
-NSString *const kLoginStringFormat = @"https://instagram.com/oauth/authorize/?client_id=%@&scope=likes+comments+relationships&redirect_uri=%@&response_type=token";
 
 #pragma mark - View Lifecycle
 
@@ -85,7 +81,7 @@ NSString *const kLoginStringFormat = @"https://instagram.com/oauth/authorize/?cl
         NSRange rangeOfAccessTokenParameter = [urlString rangeOfString:@"access_token="];
         NSUInteger indexOfTokenStarting = rangeOfAccessTokenParameter.location + rangeOfAccessTokenParameter.length;
         NSString *accessToken = [urlString substringFromIndex:indexOfTokenStarting];
-        [[NSNotificationCenter defaultCenter] postNotificationName:LoginViewControllerDidGetAccessTokenNotification object:accessToken];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLoginViewControllerDidGetAccessTokenNotification object:accessToken];
         return NO;
     }
     

@@ -90,7 +90,7 @@
 
 #pragma mark - AccessToken Notification Registration
 - (void)registerForAccessTokenNotification {
-    [[NSNotificationCenter defaultCenter] addObserverForName:LoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:kLoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         self.accessToken = note.object;
         [UICKeyChainStore setString:self.accessToken forKey:kKeyChainAccessToken];
     }];

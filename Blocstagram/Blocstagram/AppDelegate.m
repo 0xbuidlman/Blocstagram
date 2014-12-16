@@ -10,6 +10,7 @@
 #import "ImagesTableViewController.h"
 #import "LoginViewController.h"
 #import "DataSource.h"
+#import "Constants.h"
 
 @interface AppDelegate ()
 
@@ -30,7 +31,7 @@
         
         [navViewController setViewControllers:@[loginViewController] animated:YES];
         
-        [[NSNotificationCenter defaultCenter] addObserverForName:LoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:kLoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
             ImagesTableViewController *imagesViewController = [[ImagesTableViewController alloc] init];
             [navViewController setViewControllers:@[imagesViewController] animated:YES];
         }];

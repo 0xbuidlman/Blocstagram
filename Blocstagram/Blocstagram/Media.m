@@ -48,6 +48,15 @@
         // Has the user already "liked" this media or not then set to notliked
         BOOL userHasLiked = [mediaDictionary[@"user-has-liked"] boolValue];
         self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
+    
+        // http://instagram.com/developer/endpoints/media/#get_media
+        NSDictionary *likesDictionary = mediaDictionary[@"likes"];
+        if ([captionDictionary isKindOfClass:[NSDictionary class]]) {
+            self.likes = likesDictionary[@"count"];
+            NSLog(@"Likes = %@", self.likes);
+        } else {
+            self.likes = nil;
+        }
     }
     return self;
 }
