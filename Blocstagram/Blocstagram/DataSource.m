@@ -349,6 +349,7 @@
             [self reloadMediaItem:mediaItem];
         }];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLikesNotification object:mediaItem];
     [self reloadMediaItem:mediaItem];
 }
 

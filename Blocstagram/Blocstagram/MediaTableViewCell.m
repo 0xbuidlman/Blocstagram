@@ -17,6 +17,7 @@
 @property (nonatomic) UIImageView *mediaImageView;
 @property (nonatomic) UILabel *userNameAndCaptionLabel;
 @property (nonatomic) UILabel *commentLabel;
+@property (nonatomic) UILabel *likes;
 @property (nonatomic) LikeButton *likeButton;
 
 // Auto-Layout Constraints
@@ -85,16 +86,20 @@ static NSParagraphStyle *paragraphStyle;
         self.commentLabel.numberOfLines = 0;
         self.commentLabel.backgroundColor = commentLabelGrey;
         
+        self.likes = [[UILabel alloc] init];
+        self.likes.backgroundColor = commentLabelGrey;
+        self.likes.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:11.0];;
+        
         self.likeButton = [[LikeButton alloc] init];
         [self.likeButton addTarget:self action:@selector(likePressed:) forControlEvents:UIControlEventTouchUpInside];
         self.likeButton.backgroundColor = userNameLabelGrey;
         
-        for (UIView *view in @[self.mediaImageView, self.userNameAndCaptionLabel, self.commentLabel, self.likeButton]) {
+        for (UIView *view in @[self.mediaImageView, self.userNameAndCaptionLabel, self.commentLabel, self.likes, self.likeButton]) {
             [self.contentView addSubview:view];
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
         
-        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _userNameAndCaptionLabel, _commentLabel, _likeButton);
+        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _userNameAndCaptionLabel, _commentLabel, _likes, _likeButton);
         
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|"
                                                                                 options:kNilOptions
@@ -105,8 +110,8 @@ static NSParagraphStyle *paragraphStyle;
                                                                                 options:kNilOptions
                                                                                 metrics:nil
                                                                                   views:viewDictionary]]; */
-        
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_userNameAndCaptionLabel][_likeButton(==38)]|"
+        // Note: This does not work with 10K+ Likes which is common on Instagram
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_userNameAndCaptionLabel][_likes(==9)][_likeButton(==38)]|"
                                                                                  options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom
                                                                                  metrics:nil
                                                                                    views:viewDictionary]];
@@ -150,6 +155,13 @@ static NSParagraphStyle *paragraphStyle;
         
         [self.contentView addConstraints:@[self.imageHeightConstraint, self.userNameAndCaptionLabelHeightConstraint,
                                            self.commentLabelHeightConstraint]];
+        
+        // Register as an Observer of the LikesNotification
+        [[NSNotificationCenter defaultCenter] addObserverForName:kLikesNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+            Media *mediaItem = note.object;
+            self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
+        }];
+        
     }
     return self;
 }
@@ -190,6 +202,7 @@ static NSParagraphStyle *paragraphStyle;
     self.userNameAndCaptionLabel.attributedText = [self userNameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     self.likeButton.likeButtonState = mediaItem.likeState;
+    self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
 }
 
 
@@ -292,4 +305,17 @@ static NSParagraphStyle *paragraphStyle;
     return self.isEditing == NO;
 }
 
+#pragma mark - KVO for LikesNotification
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (keyPath == kLikesNotification) {
+        self.likes.text = [NSString stringWithFormat:@"%@",self.likes];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 @end
+
+
