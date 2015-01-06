@@ -332,6 +332,7 @@
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
             mediaItem.likeState = LikeStateLiked;
             [self reloadMediaItem:mediaItem];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLikesNotification object:mediaItem];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             mediaItem.likeState = LikeStateNotLiked;
             [self reloadMediaItem:mediaItem];
@@ -344,12 +345,12 @@
                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
             mediaItem.likeState = LikeStateNotLiked;
             [self reloadMediaItem:mediaItem];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLikesNotification object:mediaItem];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             mediaItem.likeState = LikeStateLiked;
             [self reloadMediaItem:mediaItem];
         }];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLikesNotification object:mediaItem];
     [self reloadMediaItem:mediaItem];
 }
 

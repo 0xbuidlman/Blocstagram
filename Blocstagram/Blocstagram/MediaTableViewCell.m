@@ -159,11 +159,18 @@ static NSParagraphStyle *paragraphStyle;
         // Register as an Observer of the LikesNotification
         [[NSNotificationCenter defaultCenter] addObserverForName:kLikesNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
             Media *mediaItem = note.object;
-            self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
+            // check within the cell if the changed media item actually matches the cell's media item
+            // and only then update the view by notifying the TableViewController.
+            if ([self.mediaItem.idNumber isEqualToString:mediaItem.idNumber]) {
+                self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
+            }
         }];
-        
     }
     return self;
+}
+
+- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation {
+    NSLog(@"Hello there");
 }
 
 
