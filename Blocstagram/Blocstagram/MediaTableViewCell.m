@@ -162,15 +162,11 @@ static NSParagraphStyle *paragraphStyle;
             // check within the cell if the changed media item actually matches the cell's media item
             // and only then update the view by notifying the TableViewController.
             if ([self.mediaItem.idNumber isEqualToString:mediaItem.idNumber]) {
-                self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
+                self.likes.attributedText = [self likeString:mediaItem.likes];//[NSString stringWithFormat:@"%@",mediaItem.likes];
             }
         }];
     }
     return self;
-}
-
-- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths withRowAnimation:(UITableViewRowAnimation)animation {
-    NSLog(@"Hello there");
 }
 
 
@@ -199,6 +195,12 @@ static NSParagraphStyle *paragraphStyle;
     self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
 }
 
+- (NSAttributedString *)likeString:(NSNumber *)likes {
+    CGFloat fontSize = 8;
+    NSString *baseString = [NSString stringWithFormat:@"%@",likes];
+    NSMutableAttributedString *mutableLikeString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:fontSize]}];
+    return mutableLikeString;
+}
 
 #pragma mark - Media Item Custom Setter
 
@@ -209,7 +211,7 @@ static NSParagraphStyle *paragraphStyle;
     self.userNameAndCaptionLabel.attributedText = [self userNameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
     self.likeButton.likeButtonState = mediaItem.likeState;
-    self.likes.text = [NSString stringWithFormat:@"%@",mediaItem.likes];
+    self.likes.attributedText = [self likeString:mediaItem.likes];//[NSString stringWithFormat:@"%@",mediaItem.likes];
 }
 
 
@@ -310,17 +312,6 @@ static NSParagraphStyle *paragraphStyle;
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     return self.isEditing == NO;
-}
-
-#pragma mark - KVO for LikesNotification
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if (keyPath == kLikesNotification) {
-        self.likes.text = [NSString stringWithFormat:@"%@",self.likes];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 @end
