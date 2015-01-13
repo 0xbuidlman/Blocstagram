@@ -361,5 +361,47 @@
     [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
 }
 
+
+#pragma mark - Comments
+
+- (void)commentOnMediaItem:(Media *)mediaItem withCommentText:(NSString *)commentText {
+    if (!commentText || commentText.length == 0) {
+        return;
+    }
+    
+    NSString *urlString = [NSString stringWithFormat:@"media/%@/comments", mediaItem.idNumber];
+    NSDictionary *parameters = @{kKeyChainAccessToken: self.accessToken, @"text": commentText};
+    
+    [self.instagramOperationManager POST:urlString parameters:parameters
+                                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                     mediaItem.temporaryComment = nil;
+                                     
+                                     NSString *refreshMediaURLString = [NSString stringWithFormat:@"media/%@", mediaItem.idNumber];
+                                     NSDictionary *parameters = @{kKeyChainAccessToken: self.accessToken};
+                                     [self.instagramOperationManager GET:refreshMediaURLString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         Media *newMediaItem = [[Media alloc] initWithDictionary:responseObject];
+                                         NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+                                         NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
+                                         [mutableArrayWithKVO replaceObjectAtIndex:index
+                                                                        withObject:newMediaItem];
+                                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                         [self reloadMediaItem:mediaItem];
+                                     }];
+                                     
+                                 } failure: ^(AFHTTPRequestOperation *operation, NSError *error) {
+                                     // Awaiting special commenting permission from Instagram.
+                                     NSLog(@"Error: %@", error);
+                                     NSLog(@"Response: %@", operation.responseString);
+                                     [self reloadMediaItem:mediaItem];
+                                 }];
+}
+
 @end
+
+
+
+
+
+
+
 
