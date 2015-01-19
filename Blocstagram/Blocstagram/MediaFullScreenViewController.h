@@ -12,10 +12,12 @@
 
 @interface MediaFullScreenViewController : UIViewController
 
+@property (nonatomic) Media *media;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UIImageView *imageView;
 
 - (instancetype)initWithMedia:(Media *)media;
 - (void)centerScrollView;
+- (void)recalculateZoomScale;
 
 @end

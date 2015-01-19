@@ -12,8 +12,6 @@
 
 @interface MediaFullScreenViewController () <UIScrollViewDelegate>
 
-@property (nonatomic) Media *media;
-
 // Gesture Recognizers
 @property (nonatomic) UITapGestureRecognizer *tap;
 @property (nonatomic) UITapGestureRecognizer *doubleTap;
@@ -83,9 +81,16 @@
     [super viewWillLayoutSubviews];
     
     self.scrollView.frame = self.view.bounds;
-    
+    [self recalculateZoomScale];
+}
+
+
+- (void)recalculateZoomScale {
     CGSize scrollViewFrameSize = self.scrollView.frame.size;
     CGSize scrollViewContentSize = self.scrollView.contentSize;
+    
+    scrollViewContentSize.height /= self.scrollView.zoomScale;
+    scrollViewContentSize.width /= self.scrollView.zoomScale;
     
     CGFloat scaleWidth = scrollViewFrameSize.width / scrollViewContentSize.width;
     CGFloat scaleHeight = scrollViewFrameSize.height / scrollViewContentSize.height;
