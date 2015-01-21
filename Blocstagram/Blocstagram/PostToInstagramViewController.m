@@ -7,6 +7,7 @@
 //
 
 #import "PostToInstagramViewController.h"
+#import "FilterCollectionViewCell.h"
 
 @interface PostToInstagramViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIDocumentInteractionControllerDelegate>
 
@@ -77,8 +78,8 @@
         self.navigationItem.rightBarButtonItem = self.sendBarButton;
     }
     
-    // Can subclass the UICollectionViewCell
-    [self.filterCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+    // Subclassed the UICollectionViewCell
+    [self.filterCollectionView registerClass:[FilterCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.filterCollectionView.backgroundColor = [UIColor whiteColor];
@@ -144,7 +145,7 @@
 
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    FilterCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
     static NSInteger imageViewTag = 1000;
     static NSInteger labelTag = 1001;
@@ -219,6 +220,26 @@
         if (noirFilter) {
             [noirFilter setValue:sourceCIImage forKey:kCIInputImageKey];
             [self addCIImageToCollectionView:noirFilter.outputImage withFilterTitle:NSLocalizedString(@"Noir", @"Noir Filter")];
+        }
+    }];
+    
+    // Vignette filter
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *vignetteFilter = [CIFilter filterWithName:@"CIVignette"];
+        
+        if (vignetteFilter) {
+            [vignetteFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            [self addCIImageToCollectionView:vignetteFilter.outputImage withFilterTitle:NSLocalizedString(@"Vignette", @"Vignette Filter")];
+        }
+    }];
+    
+    // Tonal filter
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *tonalFilter = [CIFilter filterWithName:@"CIPhotoEffectTonal"];
+        
+        if (tonalFilter) {
+            [tonalFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            [self addCIImageToCollectionView:tonalFilter.outputImage withFilterTitle:NSLocalizedString(@"Tonal", @"Tonal Filter")];
         }
     }];
     
