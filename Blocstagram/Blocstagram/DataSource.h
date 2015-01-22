@@ -16,6 +16,8 @@ typedef void (^NewItemCompletionBlock)(NSError *error);
 @property (nonatomic, readonly) NSArray *mediaItems;
 @property (nonatomic, readonly) NSString *accessToken;
 
+extern NSString *const ImageFinishedNotification;
+
 + (NSString *)instagramClientID;
 + (instancetype)sharedInstance;
 - (void)deleteMediaItem:(Media *)item;

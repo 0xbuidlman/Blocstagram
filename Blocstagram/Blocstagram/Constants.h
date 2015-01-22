@@ -9,6 +9,8 @@
 #ifndef Blocstagram_Constants_h
 #define Blocstagram_Constants_h
 
+#import <Availability.h>
+
 // String Constants
 static NSString *kAppTitle = @"Blocstagram";
 static NSString *kInstagramAPI = @"https://api.instagram.com/v1/";
@@ -30,5 +32,12 @@ static NSString *kBoldFont = @"HelveticaNeue-Bold";
 
 // Value Constants
 static const float kTransitionDuration = 0.3;
+
+// Old Fashioned Idiom-based Device Detection
+#define isPhone ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
 
 #endif

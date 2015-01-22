@@ -29,6 +29,8 @@
 
 @implementation DataSource
 
+NSString *const ImageFinishedNotification = @"ImageFinishedNotification";
+
 #pragma mark - Singleton Shared Instance Class Method & Initialization
 
 + (instancetype)sharedInstance {

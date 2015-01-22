@@ -9,12 +9,16 @@
 #import "MediaFullScreenViewController.h"
 #import "Media.h"
 #import "MediaShare.h"
+#import "Constants.h"
 
 @interface MediaFullScreenViewController () <UIScrollViewDelegate>
 
 // Gesture Recognizers
 @property (nonatomic) UITapGestureRecognizer *tap;
 @property (nonatomic) UITapGestureRecognizer *doubleTap;
+
+// to dismiss the iPad view when user taps on grey border
+@property (nonatomic) UITapGestureRecognizer *tapBehind;
 
 @end
 
@@ -60,6 +64,11 @@
     
     [self.scrollView addGestureRecognizer:self.tap];
     [self.scrollView addGestureRecognizer:self.doubleTap];
+    
+    if (isPhone == NO) {
+        self.tapBehind = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBehindFired:)];
+        self.tapBehind.cancelsTouchesInView = NO;
+    }
 }
 
 
@@ -107,6 +116,19 @@
     [super viewWillAppear:animated];
     
     [self centerScrollView];
+    
+    if (isPhone == NO) {
+        [[[[UIApplication sharedApplication] delegate] window] addGestureRecognizer:self.tapBehind];
+    }
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (isPhone == NO) {
+        [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:self.tapBehind];
+    }
 }
 
 
@@ -168,6 +190,22 @@
         [self.scrollView zoomToRect:CGRectMake(x, y, width, height) animated:YES];
     } else {
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
+    }
+}
+
+
+- (void)tapBehindFired:(UITapGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        CGPoint location = [sender locationInView:nil]; // Passing nil gives us coordinates in the window
+        CGPoint locationInVC = [self.presentedViewController.view convertPoint:location fromView:self.view.window];
+        
+        if ([self.presentedViewController.view pointInside:locationInVC withEvent:nil] == NO) {
+            // The tap was outside the VC's view
+            
+            if (self.presentingViewController) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
+        }
     }
 }
 
