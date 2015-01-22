@@ -7,6 +7,11 @@
 //
 
 #import "MediaShare.h"
+#import "Constants.h"
+
+@interface MediaShare ()
+@property (nonatomic) UIPopoverController *sharePopover;
+@end
 
 @implementation MediaShare
 
@@ -22,8 +27,15 @@
     }
     
     if (itemsToShare.count > 0) {
-        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-        [view presentViewController:activityViewController animated:YES completion:nil];
+        if (isPhone) {
+            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+            [view presentViewController:activityViewController animated:YES completion:nil];
+        } else {
+            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+            UIPopoverController *activityViewControllerPopover = [[UIPopoverController alloc] initWithContentViewController:activityViewController];
+            activityViewControllerPopover.popoverContentSize = CGSizeMake(320, 568);
+            [activityViewControllerPopover presentPopoverFromRect:CGRectMake(0, 0, 0, 0) inView:view.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        }
     }
 }
 
